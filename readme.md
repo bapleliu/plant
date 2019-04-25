@@ -17,3 +17,10 @@ This is an [example](https://blog.csdn.net/weixin_30342639/article/details/86756
 [Neo4jd3](https://github.com/eisman/neo4jd3) is also an excellent example,  but it's in Ruby.
 Maybe I need to learn d3.js from scratch, and then try to connect it with flask.
 Let's follow this [tutorial](http://benalexkeen.com/creating-graphs-using-flask-and-d3/) first.
+
+* 2019-4-25
+ModuleNotFoundError: No module named "flask.ext"
+Solution: "flask.ext.wtf"-->"flask_wtf"
+
+Fllowing the [Flask tutorial](http://www.pythondoc.com/flask-mega-tutorial/helloworld.html#id2), I've built a Login page.
+Next tutorial is the book "Data Visualization with Python and Javascript"
