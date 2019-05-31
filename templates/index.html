@@ -1,0 +1,127 @@
+﻿
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1"/>
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="static/css/styles.css"/>
+    <script type="text/javascript" src="static/js/d3.js"></script>
+</head>
+
+<body>
+<div>
+	<h2>植物知识图谱</h2>
+	<p>节点可拖拽并固定，双击解除固定，点此<a href="/">刷新</a></p>
+</div>
+<div id="info">鼠标放在器官节点上可展示详细信息</div>
+
+<script type="text/javascript">
+    var w = 1280,
+            h = 800,
+            r = 30,
+            colors = d3.scaleOrdinal(d3.schemeCategory20c);
+
+    var force = d3.forceSimulation()
+            .velocityDecay(0.3)
+            .alphaDecay(0)
+            .force("charge", d3.forceManyBody().strength(-400)) //负值表示设置为互斥力
+            .force("x", d3.forceX(w / 2).strength(0.02))
+            .force("y", d3.forceY(h / 2).strength(0.02))
+			;
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+    d3.json("static/data/graph.json", function (data) {
+        var root = d3.hierarchy(data); // <-A
+        var nodes = root.descendants(); // <-B
+        var links = root.links(); // <-C
+
+        force.nodes(nodes); // <-D
+        force.force("link", d3.forceLink(links).strength(1).distance(200));
+
+          var link = svg.selectAll("line")
+              .data(links)
+            .enter().insert("line")
+              .style("stroke", "#999")
+              .style("stroke-width", "1px");
+
+          var nodeElements = svg.selectAll("circle.node")
+              .data(nodes)
+            .enter().append("circle")
+              .attr("r", r)
+              .style("fill", function(d) {
+                  return colors(d.parent && d.parent.data.name); // <-F
+              })
+              .style("stroke", "#000")
+              .call(d3.drag() // <-G
+                      .on("start", dragStarted)
+                      .on("drag", dragged)
+                      .on("end", dragEnded))
+				.on("dblclick",releaseNode)
+				.on("mouseenter",function(d){
+					d3.select(this).style('stroke',"#999").style('stroke-width',5); //鼠标放在器官节点上，边框加粗，左上角显示详细信息
+					if (d.data.原文) {
+					  info.innerHTML=d.data.原文}
+					})
+				.on("mouseleave",function(d){
+					d3.select(this).style('stroke',"black").style('stroke-width',1); //鼠标离开器官节点上，边框复原
+					})
+
+			var text=svg.selectAll("text").data(force.nodes())
+			  .enter().append("text")
+			  .attr("color", "black")
+			  .attr("text-anchor","middle")
+			  .text(function(d){
+					return d.data.name;});
+			
+
+		 
+          force.on("tick", function(e) {
+            link.attr("x1", function(d) { return boundX(d.source.x); })
+                .attr("y1", function(d) { return boundY(d.source.y); })
+                .attr("x2", function(d) { return boundX(d.target.x); })
+                .attr("y2", function(d) { return boundY(d.target.y); });
+
+            nodeElements.attr("cx", function(d) { return boundX(d.x); })
+                .attr("cy", function(d) { return boundY(d.y); });
+			
+			text.attr("dx", function(d) { return boundX(d.x); })
+                .attr("dy", function(d) { return boundY(d.y); });
+          });
+    });
+	//节点拖拽并固定
+    function dragStarted(d) {
+        d.fx = boundX(d.x);
+        d.fy = boundY(d.y);
+    }
+
+    function dragged(d) {
+        d.fx = boundX(d3.event.x);
+        d.fy = boundY(d3.event.y);
+    }
+
+    function dragEnded(d) {
+        d.fx = boundX(d.x);
+        d.fy = boundY(d.y);
+    }
+	//双击解除节点固定
+	function releaseNode(d) {
+        d.fx = null;
+        d.fy = null;
+    }
+	//确保节点不会被拖拽到svg画布之外
+	function boundX(x) {
+		return x>(w-r)?(w-r):(x>r?x:r); 
+	}
+	
+	function boundY(y) {
+		return y>(h-r)?(h-r):(y>r?y:r);
+	}
+</script>
+
+</body>
+
+</html>
