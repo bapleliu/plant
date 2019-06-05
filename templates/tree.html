@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Tree</title>
-    <link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
-    <script type="text/javascript" src="../../lib/d3.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/css/styles.css"/>
+    <script type="text/javascript" src="static/js/d3.js"></script>
     <style type="text/css">
         .node circle {
             cursor: pointer;
@@ -216,7 +216,7 @@
     var chart = tree();
 
     function flare() {
-        d3.json("../../data/tree.json", function (nodes) {
+        d3.json("static/data/tree.json", function (nodes) {
             chart.nodes(nodes).render();
         });
     }

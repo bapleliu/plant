@@ -1,6 +1,5 @@
 ﻿
 
-
 <html>
 
 <head>
@@ -21,9 +20,9 @@
 <script type="text/javascript">
     var w = 1280,
             h = 800,
-            r = 25,
+            r = 30,
             //colors = d3.scaleOrdinal(d3.schemeCategory20c);
-			colors = d3.scaleOrdinal().domain(["物种","亚种","器官"]).range(["#6DCE9E","#FF756E","#68BDF6"]);
+			colors = d3.scaleOrdinal().domain(["species","subspecies","organ"]).range(["#6DCE9E","#FF756E","#68BDF6"]);
 
     var force = d3.forceSimulation()
             .velocityDecay(0.2)
@@ -36,7 +35,8 @@
     var svg = d3.select("body").append("svg")
             .attr("width", w)
             .attr("height", h);
-
+	
+	
     d3.json("static/data/result.json", function (data) {
         var nodes = data.nodes;
         var links = data.links;
@@ -44,22 +44,67 @@
         force.nodes(nodes); // <-D
         force.force("link", d3.forceLink(links).strength(1).distance(200));
 
-console.log(links)
-          var link = svg.selectAll("line")
-              .data(links)
-            .enter().insert("line")
-              .style("stroke", "#999")
-              .style("stroke-width", "1px");
-		  var linktext=svg.selectAll("text.linktext").data(links)
-			  .enter().append("text")
-			  .attr("class","linktext")
-			  .attr("color", "black")
-			  .attr("text-anchor","middle")
-			  .style("font-size",10)
-			  .text(function(d){
-					return d.rel;});
+		  //设置箭头
+		  var arrowsize=8
+		  svg.append('defs').append('marker')
+		    	.attr('id','arrowhead')
+				.attr('viewBox','-0 -5 10 10')
+		    	.attr('refX',45)
+		    	.attr('refY',0)
+		    	.attr('orient','auto')
+		    	.attr('markerWidth',arrowsize)
+		    	.attr('markerHeight',arrowsize)
+		    	.attr('xoverflow','visible')
+		    	.append('svg:path')
+		    	.attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+		    	.attr('fill', '#999')
+		    	.style('stroke','none');
+		  //设置连线，加上箭头
+		  link = svg.selectAll(".link")
+            .data(links)
+            .enter()
+            .append("line")
+            .attr("class", "link")
+            .attr('marker-end','url(#arrowhead)')
+		  //连线上加title
+          link.append("title")
+            .text(function (d) {return d.rel;});
+		
+		//利用path加上text
+		var lineFunction=d3.line()  //用d3.line函数将links中的source和target的xy值自动生成path的"d"参数需要的形式
+				.x(function (d){return d.source.x?d.source.x:d.target.x})
+				.y(function (d){return d.source.y?d.source.y:d.target.y});
+		edgepaths = svg.selectAll(".edgepath")
+            .data(links)
+            .enter()
+            .append('path')
+            .attr('class', 'edgepath')
+            .attr('id', function (d, i) {return 'edgepath' + i}) //每个path元素加上id，以便与下面的textpath绑定
+			.attr("d",function (d) {return lineFunction(d)}) //将lineFunction自动生成的"M x1 y1 L x2 y2"的形式传给d参数
+            .attr("stroke", "grey")
+            .attr("stroke-width", 2)
+			.style("pointer-events", "none");
+
+        edgelabels = svg.selectAll(".edgelabel")
+            .data(links)
+            .enter()
+            .append('text')
+            .style("pointer-events", "none")
+            .attr('class', 'edgelabel')
+            .attr('id', function (d, i) {return 'edgelabel' + i})
+            .attr('font-size', 10)
+            .attr('fill', '#aaa');
+
+        edgelabels.append('textPath')
+            .attr('xlink:href', function (d, i) {return '#edgepath' + i})
+            .style("text-anchor", "middle")
+            .style("pointer-events", "none")
+            .attr("startOffset", "50%")
+            .text(function (d) {return d.rel});
+			
 
 
+		  
 		  var tooltip = d3.select("body").append("div").attr("id", "tooltip").style("opacity", 0);//悬浮窗
 		  
           var nodeElements = svg.selectAll("circle.node")
@@ -104,7 +149,9 @@ console.log(links)
 			
 		 
           force.on("tick", function(e) {
-            link.attr("x1", function(d) { return boundX(d.source.x); })
+            //linkpath.attr("d", function(d) { return "M "+boundX(d.source.x)+" "+boundY(d.source.y)+" L "+boundX(d.target.x)+" "+boundY(d.target.y); });
+			
+			link.attr("x1", function(d) { return boundX(d.source.x); })
                 .attr("y1", function(d) { return boundY(d.source.y); })
                 .attr("x2", function(d) { return boundX(d.target.x); })
                 .attr("y2", function(d) { return boundY(d.target.y); });
@@ -115,8 +162,22 @@ console.log(links)
 			text.attr("dx", function(d) { return boundX(d.x); })
                 .attr("dy", function(d) { return boundY(d.y); });
 			
-			linktext.attr("dx", function(d) { return (boundX(d.source.x)+boundX(d.target.x))/2; })
-                .attr("dy", function(d) { return (boundX(d.source.y)+boundX(d.target.y))/2; });
+			edgepaths.attr('d', function (d) {
+				return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+				});
+
+			edgelabels.attr('transform', function (d) {
+				if (d.target.x < d.source.x) {
+					var bbox = this.getBBox();
+	
+					rx = bbox.x + bbox.width / 2;
+					ry = bbox.y + bbox.height / 2;
+					return 'rotate(180 ' + rx + ' ' + ry + ')';
+					}
+				else {
+					return 'rotate(0)';
+					}	
+				})
           });
     });
 	//节点拖拽并固定，固定后节点变红色
