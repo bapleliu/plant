@@ -27,13 +27,6 @@ Next tutorial is the book "Data Visualization with Python and Javascript"
 
 * 2019-5-31
 Learned d3.js and built the index.html file.
-Organized folders and files as below:
-plant:
-│  config.py
-│  server.py
-├─static
-│  ├─css
-│  ├─data
-│  └─js
-└─templates
-(use DOS command "tree /f>1.txt" to get the tree structure)
+
+* 2019-7-17
+Data Visualization with d3.js
