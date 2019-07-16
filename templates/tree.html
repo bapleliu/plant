@@ -215,7 +215,7 @@
 
     var chart = tree();
 
-    function flare() {
+    function vegetation() {
         d3.json("static/data/tree.json", function (nodes) {
             chart.nodes(nodes).render();
         });
@@ -223,7 +223,7 @@
 </script>
 
 <div class="control-group">
-    <button onclick="flare()">Render Flare</button>
+    <button onclick="vegetation()">Vegetation Classification</button>
 </div>
 
 </body>

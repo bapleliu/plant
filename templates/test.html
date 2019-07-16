@@ -1,5 +1,4 @@
 ﻿
-
 <html>
 
 <head>
@@ -22,12 +21,12 @@
             h = 800,
             r = 30,
             //colors = d3.scaleOrdinal(d3.schemeCategory20c);
-			colors = d3.scaleOrdinal().domain(["species","subspecies","organ"]).range(["#6DCE9E","#FF756E","#68BDF6"]);
+			colors = d3.scaleOrdinal().domain(["species","subspecies","organ"]).range(["#FC9D9A","#F9CDAD","#B8F1ED"]);
 
     var force = d3.forceSimulation()
             .velocityDecay(0.2)
             .alphaDecay(0)
-            .force("charge", d3.forceManyBody().strength(-100)) //负值表示设置为互斥力
+            .force("charge", d3.forceManyBody().strength(-200)) //负值表示设置为互斥力
             .force("x", d3.forceX(w / 2).strength(0.02))
             .force("y", d3.forceY(h / 2).strength(0.02))
 			;
@@ -42,14 +41,14 @@
         var links = data.links;
 
         force.nodes(nodes); // <-D
-        force.force("link", d3.forceLink(links).strength(1).distance(200));
+        force.force("link", d3.forceLink(links).strength(1).distance(150));
 
 		  //设置箭头
 		  var arrowsize=8
 		  svg.append('defs').append('marker')
 		    	.attr('id','arrowhead')
 				.attr('viewBox','-0 -5 10 10')
-		    	.attr('refX',45)
+		    	.attr('refX',r+15)
 		    	.attr('refY',0)
 		    	.attr('orient','auto')
 		    	.attr('markerWidth',arrowsize)
@@ -83,6 +82,7 @@
 			.attr("d",function (d) {return lineFunction(d)}) //将lineFunction自动生成的"M x1 y1 L x2 y2"的形式传给d参数
             .attr("stroke", "grey")
             .attr("stroke-width", 2)
+			.attr("opacity", 0.5)
 			.style("pointer-events", "none");
 
         edgelabels = svg.selectAll(".edgelabel")
@@ -93,7 +93,7 @@
             .attr('class', 'edgelabel')
             .attr('id', function (d, i) {return 'edgelabel' + i})
             .attr('font-size', 10)
-            .attr('fill', '#aaa');
+            .attr('fill', 'black');
 
         edgelabels.append('textPath')
             .attr('xlink:href', function (d, i) {return '#edgepath' + i})
@@ -110,7 +110,8 @@
           var nodeElements = svg.selectAll("circle.node")
               .data(nodes)
             .enter().append("circle")
-              .attr("r", r)
+              .attr("r", function(d){if (d.label=="organ") {return 2*r/3}
+					else {return r}}) //如果是器官节点，半径取2*r/3
               .style("fill", function(d) {
                   return colors(d.label);
               })
@@ -163,11 +164,11 @@
                 .attr("dy", function(d) { return boundY(d.y); });
 			
 			edgepaths.attr('d', function (d) {
-				return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+				return 'M ' + boundX(d.source.x) + ' ' + boundY(d.source.y) + ' L ' + boundX(d.target.x) + ' ' + boundY(d.target.y);
 				});
 
 			edgelabels.attr('transform', function (d) {
-				if (d.target.x < d.source.x) {
+				if (boundX(d.target.x) < boundX(d.source.x)) {
 					var bbox = this.getBBox();
 	
 					rx = bbox.x + bbox.width / 2;

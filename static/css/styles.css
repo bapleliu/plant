@@ -1,14 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+body,div,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td { margin:0; padding:0; }
 body {
     font-family: "helvetica";
 }
-
 button {
     margin: 0 7px 0 0;
     background-color: #f5f5f5;
     border: 1px solid #dedede;
     border-top: 1px solid #eee;
     border-left: 1px solid #eee;
-
     font-size: 12px;
     line-height: 130%;
     text-decoration: none;
@@ -16,7 +17,16 @@ button {
     color: #565656;
     cursor: pointer;
 }
-
+a {
+    text-decoration: none;
+    color: #595757;
+}
+a:hover {
+	text-decoration:underline;
+}
+ol,ul,li {
+	list-style:none;
+}
 #tooltip {
     position: absolute;           
     text-align: center;           
@@ -29,195 +39,81 @@ button {
     border-radius: 8px;           
     pointer-events: none;   
 }
-
-.box {
-    width: 200px;
-    height: 200px;
-    margin: 40px;
-    float: left;
-    text-align: center;
-    border: #969696 solid thin;
-    padding: 5px;
+.header{
+	margin:0 auto;
+	width:1280px;
 }
-
-.red {
-    background-color: #e9967a;
-    color: #f0f8ff;
+.header_t{
+	width:1002px;
+	height:84px;
+	padding-top:24px;
 }
-
-.blue {
-    background-color: #add8e6;
-    color: #f0f8ff;
+.header_s{
+	float:left;
+	padding-top:14px;
+	line-height:28px;
+	margin-left:4px;
 }
-
-.cell {
-    min-width: 40px;
-    min-height: 20px;
-    margin: 5px;
-    float: left;
-    text-align: center;
-    border: #969696 solid thin;
-    padding: 5px;
+.header_r{
+	float:right;
+	margin-right:6px;
+	margin-top:10px;
+	width:144px;
+	height:18px;
 }
-
-.fixed-cell {
-    min-width: 40px;
-    min-height: 20px;
-    margin: 5px;
-    position: fixed;
-    text-align: center;
-    border: #969696 solid thin;
-    padding: 5px;
+.header-r-b{
+	margin-top: 6px;
 }
-
-.h-bar {
-    min-height: 15px;
-    min-width: 10px;
-    background-color: steelblue;
-    margin-bottom: 2px;
-    font-size: 11px;
-    color: #f0f8ff;
-    text-align: right;
-    padding-right: 2px;
+.nav{
+	width:1280px;
+	height:40px;
 }
-
-.v-bar {
-    min-height: 1px;
-    min-width: 30px;
-    background-color: #4682b4;
-    margin-right: 2px;
-    font-size: 10px;
-    color: #f0f8ff;
-    text-align: center;
-    width: 10px;
+.nav ul li{
+	width: 124px; 
+	height: 32px; 
+	text-align:center;
+	float:left;
+	margin-right:1px;
+	border-radius:2px; 
+	border-top: 1px solid #bcbcbc;
+}
+.nav ul li a {
     display: inline-block;
+    width: 94px;
+    height: 30px;
 }
-
-.baseline {
-    height: 1px;
-    background-color: black;
+#nav .nav_home {
+	width: 126px;
 }
-
-.clear {
-    clear: both;
+.nav_home img{
+	width: 18px;
+	height: 18px;
+	margin-top: 5px;
 }
-
-.selected {
-    background-color: #f08080;
+.nav_home:hover{}
+.nav_home li:hover{
+	background:#2f4f30;
+	text-align:center;
+	border-top: 1px solid #2F4F30;
 }
-
-.control-group {
-    padding-top: 10px;
-    margin: 10px;
+.nav_home li:hover a{
+	color:#fff;
+	text-decoration:none;
 }
-
-.table {
-    width: 70%;
+.nav ul li a {
+    font-size: 14px;
+    line-height: 30px;
 }
-
-.table td, th {
-    padding: 5px;
+.nav ul .nav_on{
+	background:#2f4f30; 
+	border-top: 1px solid #2F4F30;
 }
-
-.table-header {
-    background-color: #00AFEF;
-    font-weight: bold;
+.nav ul .nav_on a{
+	color:#fff;
 }
-
-.table-row-odd {
-    background-color: #f0f8ff;
+.main{
+	width:1280px;
+	margin:0 auto;
+	padding-bottom:8px;
 }
-
-.table-row-odd {
-    background-color: #d3d3d3;
-}
-
-.code {
-    display: inline-block;
-    font-style: italic;
-    background-color: #d3d3d3;
-    border: #969696 solid thin;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.countdown{
-    width: 150px;
-    height: 150px;
-    font-size: 5em;
-    font-weight: bold;
-}
-
-.axis .grid-line{
-    stroke: black;
-    shape-rendering: crispEdges;
-    stroke-opacity: .2;
-}
-
-.line{
-    fill: none;    
-    stroke: steelblue;
-    stroke-width: 2;
-}
-
-.dot {
-  fill: #fff;
-  stroke: steelblue;
-}
-
-.area {
-    stroke: none;
-    fill: steelblue;
-    fill-opacity: .2;
-}
-
-.pie text{
-    fill: white;
-    font-weight: bold;
-}
-
-._0{
-    stroke: none;
-    fill: darkred;
-    fill-opacity: .7;
-}
-
-._1 {
-    stroke: none;
-    fill: red;
-    fill-opacity: .7;
-}
-
-._2 {
-    stroke: none;
-    fill: blue;
-    fill-opacity: .7;
-}
-
-._3 {
-    stroke: none;
-    fill: green;
-    fill-opacity: .7;
-}
-
-._4{
-    stroke: none;
-    fill: yellow;
-    fill-opacity: .7;
-}
-
-._5{
-    stroke: none;
-    fill: blueviolet;
-    fill-opacity: .7;
-}
-
-.bubble{
-    fill-opacity: .3;
-}
-
-.bar{
-    stroke: none;
-    fill: steelblue;
-}
+	

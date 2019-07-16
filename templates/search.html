@@ -1,4 +1,3 @@
-﻿
 
 <html>
 
@@ -7,32 +6,45 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1"/>
     <title>{{title}}</title>
     <link rel="stylesheet" type="text/css" href="static/css/styles.css"/>
-	<link rel="stylesheet" type="text/css" href="static/css/common.css">  
-	<link rel="stylesheet" type="text/css" href="static/css/banner.css"> 
+
     <script type="text/javascript" src="static/js/d3.js"></script>
 </head>
 
 <body>
 <div class="header">
-	<div class="header_t">
+
+	<div class="header_t" style="background-image:url(static/files/header_01.jpg);background-repeat: repeat-y">
 		<div class="header_s">
 			<h1>植物知识图谱</h1>
 		</div>
+		<div class="header_r">		
+			<div class="header-r-b">
+				<span></span>
+				<form method="post">                                        <!--需要传入的变量form类-->
+					{{ form.hidden_tag() }}
+					{{ form.name.label }}{{ form.name() }}
+					{{ form.submit() }}
+				</form>				
+			</div>
+		</div>
 	</div>
-	<div class="nav">
+	<div class="nav" style="background-image:url(static/files/header_03.jpg);background-repeat: repeat-y">
 		<ul id="nav">
-			<li class="nav_home"><a href="/"><img src="static/files/home.png" alt=""></a></li>
-			<li><a href="tree.html">植被类型</a></li>
-			<li><a href="search.html">查询页面</a></li>
-			<li><a href="/">待完成</a></li>
-			<li><a href="/">待完成</a></li>
-			<li><a href="/">待完成</a></li>
-			<li><a href="/">待完成</a></li>
-			<li style="margin-right: 0px;"><a href="/">待完成</a></li>
+			<li class="nav_home" style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="/"><img src="static/files/home.png" alt=""></a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="tree.html">植被类型</a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="search.html">查询页面</a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="/">待完成</a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="/">待完成</a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="/">待完成</a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x"><a href="/">待完成</a></li>
+			<li style="background-image:url(static/files/header_04.jpg);background-repeat: repeat-x;margin-right: 0px;"><a href="/">待完成</a></li>
 		</ul>
 	</div>
 </div>
 
+<div class="main" style="background-image:url(static/files/header_03.jpg);background-repeat: repeat-y">
+        <h2>{{ name }}的查询结果</h2>                            <!--需要传入的变量{{ name }}-->
+</div>
 
 
 <script type="text/javascript">
@@ -40,7 +52,9 @@
             h = 800,
             r = 30,
             //colors = d3.scaleOrdinal(d3.schemeCategory20c);
-			colors = d3.scaleOrdinal().domain(["species","subspecies","organ"]).range(["#FC9D9A","#F9CDAD","#B8F1ED"]);
+			colors = d3.scaleOrdinal()
+					.domain(["species","subspecies","organ"])
+					.range(["#FC9D9A","#F9CDAD","#B8F1ED"]);
 
     var force = d3.forceSimulation()
             .velocityDecay(0.2)
@@ -55,7 +69,7 @@
             .attr("height", h);
 	
 	
-    d3.json("static/data/graph.json", function (data) {
+    d3.json("static/data/result.json", function (data) {
         var nodes = data.nodes;
         var links = data.links;
 
@@ -124,11 +138,14 @@
 
 
 		  
-		  var tooltip = d3.select("body").append("div").attr("id", "tooltip").style("opacity", 0);//悬浮窗
+		  var tooltip = d3.select("body") //悬浮窗
+			.append("div")
+			.attr("id", "tooltip")
+			.style("opacity", 0);
 		  
           var nodeElements = svg.selectAll("circle.node")
               .data(nodes)
-            .enter().append("circle")
+              .enter().append("circle")
               .attr("r", function(d){if (d.label=="organ") {return 2*r/3}
 					else {return r}}) //如果是器官节点，半径取2*r/3
               .style("fill", function(d) {

@@ -1,0 +1,8 @@
+/* banner样式 */
+.banner-change{margin:0 auto;overflow:hidden;position:relative;}
+.banner-change .hd{height:16px;overflow:hidden;margin:0 auto;position:absolute;bottom:4px;left:46.5%;z-index:1;}
+.banner-change .hd ul{overflow:hidden;zoom:1;float:left;}
+.banner-change .hd ul li{float:left;margin-right:2px;width:12px;border-radius: 12px;height:12px;background:#d4d4d4;cursor:pointer;margin-left:5px;margin-right:5px;}
+.banner-change .hd ul li.on{background:#3caeed;color:#dc2c2c;}
+.banner1{position:relative;}
+.banner1 ul img{width:100%;display:block;}
